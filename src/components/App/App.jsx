@@ -1,21 +1,22 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import NewTaskForm from "../NewTaskForm";
-import TaskList from "../TaskList";
-import Footer from "../Footer";
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+
+import NewTaskForm from '../NewTaskForm';
+import TaskList from '../TaskList';
+import Footer from '../Footer';
 
 export default class App extends Component {
   static defaultProps = {
     dataTasks: [
       {
         id: 1,
-        description: "new Task",
+        description: 'new Task',
         created: new Date(),
         completed: false,
         editing: false,
       },
     ],
-    filter: "all",
+    filter: 'all',
   };
   static propTypes = {
     dataTasks: PropTypes.array.isRequired,
@@ -23,12 +24,8 @@ export default class App extends Component {
   };
   maxId = 1;
   state = {
-    dataTasks: [
-      this.createTask("Completed task"),
-      this.createTask("Editing task"),
-      this.createTask("Active task"),
-    ],
-    filter: "all",
+    dataTasks: [this.createTask('Completed task'), this.createTask('Editing task'), this.createTask('Active task')],
+    filter: 'all',
   };
 
   createTask(descr) {
@@ -53,10 +50,7 @@ export default class App extends Component {
   deleteTask = (id) => {
     this.setState(({ dataTasks }) => {
       const idx = dataTasks.findIndex((t) => t.id === id);
-      const newDataTasks = [
-        ...dataTasks.slice(0, idx),
-        ...dataTasks.slice(idx + 1),
-      ];
+      const newDataTasks = [...dataTasks.slice(0, idx), ...dataTasks.slice(idx + 1)];
       return { dataTasks: newDataTasks };
     });
   };
@@ -65,11 +59,7 @@ export default class App extends Component {
       const idx = dataTasks.findIndex((t) => t.id === id);
       const oldItem = dataTasks[idx];
       const newItem = { ...dataTasks[idx], completed: !oldItem.completed };
-      const newDataTasks = [
-        ...dataTasks.slice(0, idx),
-        newItem,
-        ...dataTasks.slice(idx + 1),
-      ];
+      const newDataTasks = [...dataTasks.slice(0, idx), newItem, ...dataTasks.slice(idx + 1)];
       return {
         dataTasks: newDataTasks,
       };
@@ -86,11 +76,11 @@ export default class App extends Component {
 
   filter = (items, filter) => {
     switch (filter) {
-      case "all":
+      case 'all':
         return items;
-      case "active":
+      case 'active':
         return items.filter((item) => !item.completed);
-      case "completed":
+      case 'completed':
         return items.filter((item) => item.completed);
       default:
         return items;
@@ -107,16 +97,12 @@ export default class App extends Component {
     const todoCount = dataTasks.length - countCompleted;
     return (
       <>
-        <header className='header'>
+        <header className="header">
           <h1>todos</h1>
           <NewTaskForm addNewTask={this.addNewTask} />
         </header>
-        <section className='main'>
-          <TaskList
-            dataTasks={visibleItems}
-            deleteTask={this.deleteTask}
-            onCompleted={this.onCompleted}
-          />
+        <section className="main">
+          <TaskList dataTasks={visibleItems} deleteTask={this.deleteTask} onCompleted={this.onCompleted} />
           <Footer
             counter={todoCount}
             deleteCompleted={this.deleteAllCompletedTasks}
