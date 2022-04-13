@@ -1,6 +1,13 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 
-export class NewTaskForm extends Component {
+export default class NewTaskForm extends Component {
+  static defaultProps = {
+    addNewTask: () => {},
+  };
+  static propTypes = {
+    addNewTask: PropTypes.func,
+  };
   state = {
     value: "",
   };
@@ -28,5 +35,3 @@ export class NewTaskForm extends Component {
     );
   }
 }
-
-export default NewTaskForm;

@@ -1,7 +1,21 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
+
 import TasksFilter from "../TasksFilter";
 
-export class Footer extends Component {
+export default class Footer extends Component {
+  static defaultProps = {
+    counter: 0,
+    deleteCompleted: () => {},
+    filter: "all",
+    onSelectFilter: () => {},
+  };
+  static propTypes = {
+    counter: PropTypes.number,
+    deleteCompleted: PropTypes.func,
+    filter: PropTypes.string,
+    onSelectFilter: PropTypes.func,
+  };
   render() {
     const { counter, deleteCompleted, filter, onSelectFilter } = this.props;
     return (
@@ -15,5 +29,3 @@ export class Footer extends Component {
     );
   }
 }
-
-export default Footer;

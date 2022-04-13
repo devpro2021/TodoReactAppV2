@@ -1,6 +1,15 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 
-export class TasksFilter extends Component {
+export default class TasksFilter extends Component {
+  static defaultProps = {
+    filter: "all",
+    onSelectFilter: () => {},
+  };
+  static propTypes = {
+    filter: PropTypes.string,
+    onSelectFilter: PropTypes.func,
+  };
   buttons = [
     { name: "all", label: "All" },
     { name: "active", label: "Active" },
@@ -9,7 +18,6 @@ export class TasksFilter extends Component {
   render() {
     const { filter, onSelectFilter } = this.props;
     const buttons = this.buttons.map(({ name, label }) => {
-      console.log(filter);
       const active = filter === name;
       const selectedClass = active ? "selected" : null;
       return (
@@ -26,5 +34,3 @@ export class TasksFilter extends Component {
     return <ul className='filters'>{buttons}</ul>;
   }
 }
-
-export default TasksFilter;

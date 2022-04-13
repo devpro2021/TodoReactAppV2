@@ -1,9 +1,26 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 import NewTaskForm from "../NewTaskForm";
 import TaskList from "../TaskList";
 import Footer from "../Footer";
 
-class App extends Component {
+export default class App extends Component {
+  static defaultProps = {
+    dataTasks: [
+      {
+        id: 1,
+        description: "new Task",
+        created: new Date(),
+        completed: false,
+        editing: false,
+      },
+    ],
+    filter: "all",
+  };
+  static propTypes = {
+    dataTasks: PropTypes.array.isRequired,
+    filter: PropTypes.string,
+  };
   maxId = 1;
   state = {
     dataTasks: [
@@ -18,7 +35,7 @@ class App extends Component {
     return {
       id: this.maxId++,
       description: descr,
-      created: `created 17 seconds ago`,
+      created: new Date(),
       completed: false,
       editing: false,
     };
@@ -111,5 +128,3 @@ class App extends Component {
     );
   }
 }
-
-export default App;
