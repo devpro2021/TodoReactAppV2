@@ -1,7 +1,7 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 
-import Task from "../Task";
+import Task from '../Task';
 export default class TaskList extends Component {
   static defaultProps = {
     dataTasks: [],
@@ -16,16 +16,12 @@ export default class TaskList extends Component {
   render() {
     const { dataTasks, deleteTask, onCompleted } = this.props;
     return (
-      <ul className='todo-list'>
+      <ul className="todo-list">
         {dataTasks.map((element) => {
           const { id, completed, ...otherData } = element;
           return (
-            <li key={id} className={completed ? "completed" : null}>
-              <Task
-                data={otherData}
-                deleteTask={() => deleteTask(id)}
-                onCompleted={() => onCompleted(id)}
-              />
+            <li key={id} className={completed ? 'completed' : null}>
+              <Task data={otherData} deleteTask={() => deleteTask(id)} onCompleted={() => onCompleted(id)} />
             </li>
           );
         })}

@@ -1,5 +1,5 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 
 export default class NewTaskForm extends Component {
   static defaultProps = {
@@ -9,14 +9,14 @@ export default class NewTaskForm extends Component {
     addNewTask: PropTypes.func,
   };
   state = {
-    value: "",
+    value: '',
   };
   onSubmit = (e) => {
     e.preventDefault();
     if (this.state.value) {
       this.props.addNewTask(this.state.value.trim());
     }
-    this.setState({ value: "" });
+    this.setState({ value: '' });
   };
   onChangeLabel = (e) => {
     this.setState({ value: e.target.value });
@@ -25,8 +25,8 @@ export default class NewTaskForm extends Component {
     return (
       <form onSubmit={this.onSubmit}>
         <input
-          className='new-todo'
-          placeholder='What needs to be done?'
+          className="new-todo"
+          placeholder="What needs to be done?"
           autoFocus
           value={this.state.value}
           onChange={this.onChangeLabel}
