@@ -13,8 +13,10 @@ export default class NewTaskForm extends Component {
   };
   onSubmit = (e) => {
     e.preventDefault();
-    if (this.state.value) {
-      this.props.addNewTask(this.state.value.trim());
+    const trimDescription = this.state.value.trim();
+
+    if (this.state.value && this.state.value.charAt(0) !== ' ') {
+      this.props.addNewTask(trimDescription);
     }
     this.setState({ value: '' });
   };

@@ -19,11 +19,9 @@ export default class Task extends Component {
     const { description, created } = this.props.data;
     return (
       <div className="view">
-        <input className="toggle" type="checkbox" />
+        <input className="toggle" type="checkbox" onChange={this.props.onCompleted} />
         <label>
-          <span className="description" onClick={this.props.onCompleted}>
-            {description}
-          </span>
+          <span className="description">{description}</span>
           <span className="created">created {formatDistanceToNow(created, { includeSeconds: true })} ago</span>
         </label>
         <button className="icon icon-edit"></button>
