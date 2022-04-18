@@ -16,11 +16,11 @@ export default class Task extends Component {
     deleteTask: PropTypes.func,
   };
   render() {
-    const { description, created } = this.props.data;
+    const { description, created, checked } = this.props.data;
     return (
       <div className="view">
-        <input className="toggle" type="checkbox" onChange={this.props.onCompleted} />
-        <label>
+        <input className="toggle" type="checkbox" readOnly onClick={this.props.onCompleted} checked={checked} />
+        <label onClick={this.props.onCompleted} onKeyPress={this.props.onCompleted}>
           <span className="description">{description}</span>
           <span className="created">created {formatDistanceToNow(created, { includeSeconds: true })} ago</span>
         </label>

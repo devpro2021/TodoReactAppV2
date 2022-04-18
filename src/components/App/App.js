@@ -14,6 +14,7 @@ export default class App extends Component {
         created: new Date(),
         completed: false,
         editing: false,
+        checked: false,
       },
     ],
     filter: 'all',
@@ -35,6 +36,7 @@ export default class App extends Component {
       created: new Date(),
       completed: false,
       editing: false,
+      checked: false,
     };
   }
 
@@ -58,7 +60,7 @@ export default class App extends Component {
     this.setState(({ dataTasks }) => {
       const idx = dataTasks.findIndex((t) => t.id === id);
       const oldItem = dataTasks[idx];
-      const newItem = { ...dataTasks[idx], completed: !oldItem.completed };
+      const newItem = { ...dataTasks[idx], completed: !oldItem.completed, checked: !oldItem.checked };
       const newDataTasks = [...dataTasks.slice(0, idx), newItem, ...dataTasks.slice(idx + 1)];
       return {
         dataTasks: newDataTasks,
@@ -87,7 +89,7 @@ export default class App extends Component {
     }
   };
   onSelectFilter = (filter) => {
-    this.setState({ filter });
+    this.setState({ filter: filter });
   };
 
   render() {
@@ -102,7 +104,12 @@ export default class App extends Component {
           <NewTaskForm addNewTask={this.addNewTask} />
         </header>
         <section className="main">
-          <TaskList dataTasks={visibleItems} deleteTask={this.deleteTask} onCompleted={this.onCompleted} />
+          <TaskList
+            dataTasks={visibleItems}
+            deleteTask={this.deleteTask}
+            onCompleted={this.onCompleted}
+            filterData={filter}
+          />
           <Footer
             counter={todoCount}
             deleteCompleted={this.deleteAllCompletedTasks}
