@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import NewTaskForm from '../NewTaskForm';
 import TaskList from '../TaskList';
 import Footer from '../Footer';
+import './App.css';
 
 export default class App extends Component {
   static defaultProps = {
@@ -15,6 +16,8 @@ export default class App extends Component {
         completed: false,
         editing: false,
         checked: false,
+        minValue: 10,
+        secValue: 0,
       },
     ],
     filter: 'all',
@@ -25,11 +28,21 @@ export default class App extends Component {
   };
   maxId = 1;
   state = {
-    dataTasks: [this.createTask('Completed task'), this.createTask('Editing task'), this.createTask('Active task')],
+    dataTasks: [
+      this.createTask('Completed task', 10, 0),
+      this.createTask('Editing task', 10, 0),
+      this.createTask('Active task', 10, 0),
+    ],
     filter: 'all',
   };
 
-  createTask(descr) {
+  createTask(descr, minValue, secValue) {
+    let minNumber = parseInt(minValue);
+    let secNumber = parseInt(secValue);
+    if (secNumber > 60) {
+      minNumber += Math.trunc(secNumber / 60);
+      secNumber -= Math.trunc(secNumber / 60) * 60;
+    }
     return {
       id: this.maxId++,
       description: descr,
@@ -37,12 +50,14 @@ export default class App extends Component {
       completed: false,
       editing: false,
       checked: false,
+      minValue: minNumber,
+      secValue: secNumber,
     };
   }
 
-  addNewTask = (task) => {
+  addNewTask = (task, minValue, secValue) => {
     this.setState(({ dataTasks }) => {
-      const newTask = this.createTask(task);
+      const newTask = this.createTask(task, minValue, secValue);
       const newDataTasks = [...dataTasks, newTask];
       return {
         dataTasks: newDataTasks,

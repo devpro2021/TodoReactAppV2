@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-
+import './TasksFilter.css';
 export default class TasksFilter extends Component {
   static defaultProps = {
     filter: 'all',
@@ -32,9 +32,8 @@ export default class TasksFilter extends Component {
       return (
         <li key={name}>
           <button className={selectedClass} onClick={() => onSelectFilter(name)}>
-            {' '}
-            {label}{' '}
-          </button>{' '}
+            {label}
+          </button>
         </li>
       );
     });

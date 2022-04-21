@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 import Task from '../Task';
+import './TaskList.css';
 export default class TaskList extends Component {
   static defaultProps = {
     dataTasks: [],
@@ -16,7 +17,7 @@ export default class TaskList extends Component {
   render() {
     let { dataTasks, deleteTask, onCompleted, filterData, checked } = this.props;
     const listItems = dataTasks.map((element) => {
-      const { id, completed, ...otherData } = element;
+      const { id, completed, minValue, secValue, ...otherData } = element;
       let classNames = 'active';
       if (element.completed) {
         classNames = 'completed';
@@ -29,6 +30,8 @@ export default class TaskList extends Component {
               deleteTask={() => deleteTask(id)}
               onCompleted={() => onCompleted(id)}
               checked={checked}
+              minValue={minValue}
+              secValue={secValue}
             />
           </li>
         );
@@ -42,6 +45,8 @@ export default class TaskList extends Component {
               onCompleted={() => onCompleted(id)}
               checked={checked}
               className={classNames}
+              minValue={minValue}
+              secValue={secValue}
             />
           </li>
         );
