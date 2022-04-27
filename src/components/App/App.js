@@ -73,10 +73,15 @@ export default class App extends Component {
   };
   onCompleted = (id) => {
     this.setState(({ dataTasks }) => {
-      const idx = dataTasks.findIndex((t) => t.id === id);
-      const oldItem = dataTasks[idx];
-      const newItem = { ...dataTasks[idx], completed: !oldItem.completed, checked: !oldItem.checked };
-      const newDataTasks = [...dataTasks.slice(0, idx), newItem, ...dataTasks.slice(idx + 1)];
+      const newDataTasks = dataTasks.map((el) => {
+        if (el.id === id) {
+          return {
+            ...el,
+            completed: !el.completed,
+          };
+        }
+        return el;
+      });
       return {
         dataTasks: newDataTasks,
       };
@@ -122,7 +127,7 @@ export default class App extends Component {
           <TaskList
             dataTasks={visibleItems}
             deleteTask={this.deleteTask}
-            onCompleted={this.onCompleted}
+            onCheckBoxClick={this.onCompleted}
             filterData={filter}
           />
           <Footer

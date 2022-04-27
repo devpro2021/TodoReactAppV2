@@ -1,76 +1,89 @@
 import React, { Component } from 'react';
-import { formatDistanceToNow, format } from 'date-fns';
+import { format } from 'date-fns';
 import PropTypes from 'prop-types';
 import './Task.css';
 export default class Task extends Component {
   static defaultProps = {
-    onCompleted: () => {},
+    onCheckBoxClick: () => {},
     description: 'new Task',
     created: new Date(),
     deleteTask: () => {},
   };
   static propTypes = {
-    onCompleted: PropTypes.func,
+    onCheckBoxClick: PropTypes.func,
     description: PropTypes.string,
     created: PropTypes.object,
     deleteTask: PropTypes.func,
   };
   state = {
-    min: this.props.minValue,
-    sec: this.props.secValue,
+    timeleft: this.props.secValue + this.props.minValue * 60,
     isStart: false,
-  };
-  handleStart = (e) => {
-    e.stopPropagation();
-    this.setState({ isStart: true });
-    this.timerID = setInterval(() => {
-      let { min, sec, isStart } = this.state;
-      const { onCompleted } = this.props;
-      if (min === 0 && sec === 0 && isStart) {
-        clearInterval(this.timerID);
-        this.setState({ isStart: false });
-      }
-
-      if (sec > 0) {
-        this.setState({ sec: sec - 1, isStart: true });
-      } else if (sec === 0 && min === 0) {
-        onCompleted();
-        this.setState({ min: this.props.minValue, sec: this.props.secValue });
-      } else {
-        this.setState({ min: min - 1, sec: 59 });
-      }
-    }, 1000);
-  };
-
-  handlePause = (e) => {
-    e.stopPropagation();
-    this.setState({ isStart: false });
-    clearInterval(this.timerID);
+    timerID: null,
   };
 
   componentWillUnmount() {
-    clearInterval(this.timerID);
+    clearInterval(this.state.timerID);
   }
+
+  secDecrement = () => {
+    const { timeleft, isStart } = this.state;
+    const { onCheckBoxClick } = this.props;
+    if (timeleft > 1) {
+      this.setState({
+        timeleft: timeleft - 1,
+        isStart: true,
+      });
+    } else {
+      onCheckBoxClick();
+      clearInterval(this.state.timerID);
+      this.setState({
+        timeleft: 0,
+        isStart: false,
+        timerID: null,
+      });
+    }
+  };
+
+  handlePause = () => {
+    this.setState({ isStart: false });
+    clearInterval(this.state.timerID);
+  };
+
+  handleStart = (e) => {
+    e.stopPropagation();
+    const counterID = setInterval(() => {
+      this.secDecrement();
+    }, 1000);
+    this.setState({ isStart: true, timerID: counterID });
+  };
+
+  handlerDone = () => {
+    const { onCheckBoxClick } = this.props;
+    onCheckBoxClick();
+    this.handlePause();
+  };
+
   render() {
-    const { description, created, checked } = this.props.data;
-    const { min, sec, isStart } = this.state;
+    const { description, timeAfterCreate, checked, completed } = this.props;
+    const { timeleft, isStart } = this.state;
+    const buttonTimer = !isStart ? (
+      <button type="button" className="icon icon-play" onClick={this.handleStart} disabled={completed} />
+    ) : (
+      <button type="button" className="icon icon-pause" onClick={this.handlePause} />
+    );
     return (
       <div className="view">
-        <input className="toggle" type="checkbox" readOnly onClick={this.props.onCompleted} checked={checked} />
-        <label>
-          <span className="title" onClick={this.props.onCompleted} onKeyPress={this.props.onCompleted}>
+        <input className="toggle" type="checkbox" readOnly onClick={this.handlerDone} checked={checked} />
+        <div className="label">
+          <span className="title" onClick={this.handlerDone}>
             {description}
           </span>
           <span className="description">
-            {!isStart ? (
-              <button className="icon icon-play" onClick={this.handleStart}></button>
-            ) : (
-              <button className="icon icon-pause" onClick={this.handlePause}></button>
-            )}
-            {min}:{format(sec * 1000, 'ss')}
+            {buttonTimer}
+            <span className="description__time-value">{format(new Date(timeleft * 1000).getTime(), 'm:ss')}</span>
           </span>
-          <span className="description">created {formatDistanceToNow(created)} ago</span>
-        </label>
+          <span className="description">created {timeAfterCreate} ago</span>
+        </div>
         <button className="icon icon-edit"></button>
         <button className="icon icon-destroy" onClick={this.props.deleteTask}></button>
       </div>

@@ -27,7 +27,7 @@ export default class NewTaskForm extends Component {
       alert('Please enter value of minute');
       return;
     } else {
-      addNewTask(trimDescription, (minValue = 0), secValue);
+      addNewTask(trimDescription, minValue, secValue);
     }
 
     this.setState({ value: '', minValue: '', secValue: '' });
