@@ -9,6 +9,7 @@ export default class NewTaskForm extends Component {
   static propTypes = {
     addNewTask: PropTypes.func,
   };
+
   state = {
     value: '',
     minValue: '',

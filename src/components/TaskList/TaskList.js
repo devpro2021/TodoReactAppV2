@@ -4,12 +4,12 @@ import { formatDistanceToNow } from 'date-fns';
 
 import Task from '../Task';
 import './TaskList.css';
-const TaskList = ({ dataTasks, deleteTask, filterData, checked, onCheckBoxClick }) => {
+const TaskList = ({ dataTasks, deleteTask, filterData, onCheckBoxClick }) => {
   const listItems = dataTasks.map((element) => {
     const { id, minValue, secValue } = element;
     const timeAfterCreate = formatDistanceToNow(new Date(element.created));
     let classNames = '';
-    checked = false;
+    let checked = false;
     if (element.completed) {
       classNames = 'completed';
       checked = true;

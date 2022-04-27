@@ -6,14 +6,22 @@ export default class Task extends Component {
   static defaultProps = {
     onCheckBoxClick: () => {},
     description: 'new Task',
-    created: new Date(),
+    timeAfterCreate: new Date(),
     deleteTask: () => {},
+    checked: false,
+    minValue: 10,
+    secValue: 0,
+    className: '',
   };
   static propTypes = {
     onCheckBoxClick: PropTypes.func,
     description: PropTypes.string,
-    created: PropTypes.object,
+    timeAfterCreate: PropTypes.string,
     deleteTask: PropTypes.func,
+    checked: PropTypes.bool,
+    minValue: PropTypes.number,
+    secValue: PropTypes.number,
+    className: PropTypes.string,
   };
   state = {
     timeleft: this.props.secValue + this.props.minValue * 60,
