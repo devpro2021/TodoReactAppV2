@@ -1,16 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import './TasksFilter.css';
-export default class TasksFilter extends Component {
-  static defaultProps = {
-    filter: 'all',
-    onSelectFilter: () => {},
-  };
-  static propTypes = {
-    filter: PropTypes.string,
-    onSelectFilter: PropTypes.func,
-  };
-  buttons = [
+const TasksFilter = ({ filter, onSelectFilter }) => {
+  const buttonsArray = [
     {
       name: 'all',
       label: 'All',
@@ -24,19 +16,27 @@ export default class TasksFilter extends Component {
       label: 'Completed',
     },
   ];
-  render() {
-    const { filter, onSelectFilter } = this.props;
-    const buttons = this.buttons.map(({ name, label }) => {
-      const active = filter === name;
-      const selectedClass = active ? 'selected' : null;
-      return (
-        <li key={name}>
-          <button className={selectedClass} onClick={() => onSelectFilter(name)}>
-            {label}
-          </button>
-        </li>
-      );
-    });
-    return <ul className="filters"> {buttons} </ul>;
-  }
-}
+  const buttons = buttonsArray.map(({ name, label }) => {
+    const active = filter === name;
+    const selectedClass = active ? 'selected' : null;
+    return (
+      <li key={name}>
+        <button className={selectedClass} onClick={() => onSelectFilter(name)}>
+          {label}
+        </button>
+      </li>
+    );
+  });
+  return <ul className="filters"> {buttons} </ul>;
+};
+
+TasksFilter.defaultProps = {
+  filter: 'all',
+  onSelectFilter: () => {},
+};
+
+TasksFilter.propTypes = {
+  filter: PropTypes.string,
+  onSelectFilter: PropTypes.func,
+};
+export default TasksFilter;

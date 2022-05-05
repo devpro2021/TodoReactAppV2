@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 
 import NewTaskForm from '../NewTaskForm';
@@ -6,37 +6,16 @@ import TaskList from '../TaskList';
 import Footer from '../Footer';
 import './App.css';
 
-export default class App extends Component {
-  static defaultProps = {
-    dataTasks: [
-      {
-        id: 1,
-        description: 'new Task',
-        created: new Date(),
-        completed: false,
-        editing: false,
-        checked: false,
-        minValue: 10,
-        secValue: 0,
-      },
-    ],
-    filter: 'all',
-  };
-  static propTypes = {
-    dataTasks: PropTypes.array.isRequired,
-    filter: PropTypes.string,
-  };
-  maxId = 1;
-  state = {
-    dataTasks: [
-      this.createTask('Completed task', 10, 0),
-      this.createTask('Editing task', 10, 0),
-      this.createTask('Active task', 10, 0),
-    ],
-    filter: 'all',
-  };
+const App = () => {
+  let maxId = 1;
+  const [dataTasks, setDataTasks] = useState([
+    createTask('Completed task', 10, 0),
+    createTask('Editing task', 10, 0),
+    createTask('Active task', 10, 0),
+  ]);
+  const [filter, setFilter] = useState('all');
 
-  createTask(descr, minValue, secValue) {
+  function createTask(descr, minValue, secValue) {
     let minNumber = parseInt(minValue);
     let secNumber = parseInt(secValue);
     if (secNumber > 60) {
@@ -44,7 +23,7 @@ export default class App extends Component {
       secNumber -= Math.trunc(secNumber / 60) * 60;
     }
     return {
-      id: this.maxId++,
+      id: maxId++,
       description: descr,
       created: new Date(),
       completed: false,
@@ -54,49 +33,31 @@ export default class App extends Component {
       secValue: secNumber,
     };
   }
-
-  addNewTask = (task, minValue, secValue) => {
-    this.setState(({ dataTasks }) => {
-      const newTask = this.createTask(task, minValue, secValue);
-      const newDataTasks = [...dataTasks, newTask];
-      return {
-        dataTasks: newDataTasks,
-      };
-    });
+  const addNewTask = (task, minValue, secValue) => {
+    const newTask = createTask(task, minValue, secValue);
+    setDataTasks([...dataTasks, newTask]);
   };
-  deleteTask = (id) => {
-    this.setState(({ dataTasks }) => {
-      const idx = dataTasks.findIndex((t) => t.id === id);
-      const newDataTasks = [...dataTasks.slice(0, idx), ...dataTasks.slice(idx + 1)];
-      return { dataTasks: newDataTasks };
-    });
+  const deleteTask = (id) => {
+    const newTasks = dataTasks.filter((item) => item.id !== id);
+    setDataTasks(newTasks);
   };
-  onCompleted = (id) => {
-    this.setState(({ dataTasks }) => {
-      const newDataTasks = dataTasks.map((el) => {
-        if (el.id === id) {
-          return {
-            ...el,
-            completed: !el.completed,
-          };
-        }
-        return el;
-      });
-      return {
-        dataTasks: newDataTasks,
-      };
+  const onCompleted = (id) => {
+    const newDataTasks = dataTasks.map((el) => {
+      if (el.id === id) {
+        return {
+          ...el,
+          completed: !el.completed,
+        };
+      }
+      return el;
     });
+    setDataTasks(newDataTasks);
   };
-  deleteAllCompletedTasks = () => {
-    this.setState(({ dataTasks }) => {
-      const newData = dataTasks.filter((item) => !item.completed);
-      return {
-        dataTasks: newData,
-      };
-    });
+  const deleteAllCompletedTasks = () => {
+    const newData = dataTasks.filter((item) => !item.completed);
+    setDataTasks(newData);
   };
-
-  filter = (items, filter) => {
+  const filterFunc = (items, filter) => {
     switch (filter) {
       case 'all':
         return items;
@@ -108,36 +69,49 @@ export default class App extends Component {
         return items;
     }
   };
-  onSelectFilter = (filter) => {
-    this.setState({ filter: filter });
+  const onSelectFilter = (filter) => {
+    setFilter(filter);
   };
+  const visibleItems = filterFunc(dataTasks, filter);
+  const countCompleted = dataTasks.filter((t) => t.completed).length;
+  const todoCount = dataTasks.length - countCompleted;
+  return (
+    <>
+      <header className="header">
+        <h1>todos</h1>
+        <NewTaskForm addNewTask={addNewTask} />
+      </header>
+      <section className="main">
+        <TaskList dataTasks={visibleItems} deleteTask={deleteTask} onCheckBoxClick={onCompleted} filterData={filter} />
+        <Footer
+          counter={todoCount}
+          deleteCompleted={deleteAllCompletedTasks}
+          filter={filter}
+          onSelectFilter={onSelectFilter}
+        />
+      </section>
+    </>
+  );
+};
 
-  render() {
-    const { dataTasks, filter } = this.state;
-    const visibleItems = this.filter(dataTasks, filter);
-    const countCompleted = dataTasks.filter((t) => t.completed).length;
-    const todoCount = dataTasks.length - countCompleted;
-    return (
-      <>
-        <header className="header">
-          <h1>todos</h1>
-          <NewTaskForm addNewTask={this.addNewTask} />
-        </header>
-        <section className="main">
-          <TaskList
-            dataTasks={visibleItems}
-            deleteTask={this.deleteTask}
-            onCheckBoxClick={this.onCompleted}
-            filterData={filter}
-          />
-          <Footer
-            counter={todoCount}
-            deleteCompleted={this.deleteAllCompletedTasks}
-            filter={filter}
-            onSelectFilter={this.onSelectFilter}
-          />
-        </section>
-      </>
-    );
-  }
-}
+App.defaultProps = {
+  dataTasks: [
+    {
+      id: 1,
+      description: 'new Task',
+      created: new Date(),
+      completed: false,
+      editing: false,
+      checked: false,
+      minValue: 10,
+      secValue: 0,
+    },
+  ],
+  filter: 'all',
+};
+
+App.propTypes = {
+  dataTasks: PropTypes.array.isRequired,
+  filter: PropTypes.string,
+};
+export default App;

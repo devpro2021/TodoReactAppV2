@@ -1,100 +1,95 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import { format } from 'date-fns';
 import PropTypes from 'prop-types';
 import './Task.css';
-export default class Task extends Component {
-  static defaultProps = {
-    onCheckBoxClick: () => {},
-    description: 'new Task',
-    timeAfterCreate: new Date(),
-    deleteTask: () => {},
-    checked: false,
-    minValue: 10,
-    secValue: 0,
-    className: '',
-  };
-  static propTypes = {
-    onCheckBoxClick: PropTypes.func,
-    description: PropTypes.string,
-    timeAfterCreate: PropTypes.string,
-    deleteTask: PropTypes.func,
-    checked: PropTypes.bool,
-    minValue: PropTypes.number,
-    secValue: PropTypes.number,
-    className: PropTypes.string,
-  };
-  state = {
-    timeleft: this.props.secValue + this.props.minValue * 60,
-    isStart: false,
-    timerID: null,
-  };
+const Task = ({
+  secValue,
+  minValue,
+  onCheckBoxClick,
+  description,
+  timeAfterCreate,
+  checked,
+  completed,
+  deleteTask,
+}) => {
+  const [isStart, setIsStart] = useState(false);
+  const [timeleft, setTimeleft] = useState(secValue + minValue * 60);
+  let counter = null;
 
-  componentWillUnmount() {
-    clearInterval(this.state.timerID);
-  }
-
-  secDecrement = () => {
-    const { timeleft, isStart } = this.state;
-    const { onCheckBoxClick } = this.props;
-    if (timeleft > 1) {
-      this.setState({
-        timeleft: timeleft - 1,
-        isStart: true,
-      });
-    } else {
-      onCheckBoxClick();
-      clearInterval(this.state.timerID);
-      this.setState({
-        timeleft: 0,
-        isStart: false,
-        timerID: null,
-      });
-    }
-  };
-
-  handlePause = () => {
-    this.setState({ isStart: false });
-    clearInterval(this.state.timerID);
-  };
-
-  handleStart = (e) => {
-    e.stopPropagation();
-    const counterID = setInterval(() => {
-      this.secDecrement();
-    }, 1000);
-    this.setState({ isStart: true, timerID: counterID });
-  };
-
-  handlerDone = () => {
-    const { onCheckBoxClick } = this.props;
+  const handlerDone = () => {
     onCheckBoxClick();
-    this.handlePause();
+    handlePause();
+  };
+  const handlePause = () => {
+    setIsStart(false);
+    clearInterval(counter);
   };
 
-  render() {
-    const { description, timeAfterCreate, checked, completed } = this.props;
-    const { timeleft, isStart } = this.state;
-    const buttonTimer = !isStart ? (
-      <button type="button" className="icon icon-play" onClick={this.handleStart} disabled={completed} />
-    ) : (
-      <button type="button" className="icon icon-pause" onClick={this.handlePause} />
-    );
-    return (
-      <div className="view">
-        <input className="toggle" type="checkbox" readOnly onClick={this.handlerDone} checked={checked} />
-        <div className="label">
-          <span className="title" onClick={this.handlerDone}>
-            {description}
-          </span>
-          <span className="description">
-            {buttonTimer}
-            <span className="description__time-value">{format(new Date(timeleft * 1000).getTime(), 'm:ss')}</span>
-          </span>
-          <span className="description">created {timeAfterCreate} ago</span>
-        </div>
-        <button className="icon icon-edit"></button>
-        <button className="icon icon-destroy" onClick={this.props.deleteTask}></button>
+  const handleStart = (e) => {
+    e.stopPropagation();
+    setIsStart(true);
+  };
+
+  useEffect(() => {
+    if (isStart) {
+      if (timeleft > 0) {
+        counter = setInterval(() => {
+          setTimeleft((timeleft) => timeleft - 1);
+        }, 1000);
+      } else {
+        console.log('yes');
+        handlePause();
+        onCheckBoxClick();
+      }
+    }
+    return () => clearInterval(counter);
+  }, [isStart, timeleft]);
+
+  const buttonTimer = !isStart ? (
+    <button type="button" className="icon icon-play" onClick={handleStart} disabled={completed} />
+  ) : (
+    <button type="button" className="icon icon-pause" onClick={handlePause} />
+  );
+
+  return (
+    <div className="view">
+      <input className="toggle" type="checkbox" readOnly onClick={handlerDone} checked={checked} />
+      <div className="label">
+        <span className="title" onClick={handlerDone}>
+          {description}
+        </span>
+        <span className="description">
+          {buttonTimer}
+          <span className="description__time-value">{format(new Date(timeleft * 1000).getTime(), 'm:ss')}</span>
+        </span>
+        <span className="description">created {timeAfterCreate} ago</span>
       </div>
-    );
-  }
-}
+      <button className="icon icon-edit"></button>
+      <button className="icon icon-destroy" onClick={deleteTask}></button>
+    </div>
+  );
+};
+
+Task.defaultProps = {
+  onCheckBoxClick: () => {},
+  description: 'new Task',
+  timeAfterCreate: new Date(),
+  deleteTask: () => {},
+  checked: false,
+  minValue: 10,
+  secValue: 0,
+  className: '',
+};
+
+Task.propTypes = {
+  onCheckBoxClick: PropTypes.func,
+  description: PropTypes.string,
+  timeAfterCreate: PropTypes.string,
+  deleteTask: PropTypes.func,
+  checked: PropTypes.bool,
+  minValue: PropTypes.number,
+  secValue: PropTypes.number,
+  className: PropTypes.string,
+};
+
+export default Task;
