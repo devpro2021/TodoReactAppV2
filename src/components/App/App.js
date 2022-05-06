@@ -7,7 +7,6 @@ import Footer from '../Footer';
 import './App.css';
 
 const App = () => {
-  let maxId = 1;
   const [dataTasks, setDataTasks] = useState([
     createTask('Completed task', 10, 0),
     createTask('Editing task', 10, 0),
@@ -16,6 +15,7 @@ const App = () => {
   const [filter, setFilter] = useState('all');
 
   function createTask(descr, minValue, secValue) {
+    let maxId = 1;
     let minNumber = parseInt(minValue);
     let secNumber = parseInt(secValue);
     if (secNumber > 60) {
@@ -23,7 +23,7 @@ const App = () => {
       secNumber -= Math.trunc(secNumber / 60) * 60;
     }
     return {
-      id: maxId++,
+      id: Math.floor(Math.random() * 100),
       description: descr,
       created: new Date(),
       completed: false,
@@ -41,16 +41,12 @@ const App = () => {
     const newTasks = dataTasks.filter((item) => item.id !== id);
     setDataTasks(newTasks);
   };
+
   const onCompleted = (id) => {
-    const newDataTasks = dataTasks.map((el) => {
-      if (el.id === id) {
-        return {
-          ...el,
-          completed: !el.completed,
-        };
-      }
-      return el;
-    });
+    const idx = dataTasks.findIndex((t) => t.id === id);
+    const oldItem = dataTasks[idx];
+    const newItem = { ...dataTasks[idx], completed: !oldItem.completed, checked: !oldItem.checked };
+    const newDataTasks = [...dataTasks.slice(0, idx), newItem, ...dataTasks.slice(idx + 1)];
     setDataTasks(newDataTasks);
   };
   const deleteAllCompletedTasks = () => {

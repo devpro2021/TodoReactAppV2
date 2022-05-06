@@ -15,14 +15,13 @@ const Task = ({
   const [isStart, setIsStart] = useState(false);
   const [timeleft, setTimeleft] = useState(secValue + minValue * 60);
   let counter = null;
-
-  const handlerDone = () => {
-    onCheckBoxClick();
-    handlePause();
-  };
   const handlePause = () => {
     setIsStart(false);
     clearInterval(counter);
+  };
+  const handlerDone = () => {
+    onCheckBoxClick();
+    handlePause();
   };
 
   const handleStart = (e) => {
