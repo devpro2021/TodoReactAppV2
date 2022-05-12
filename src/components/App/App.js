@@ -15,7 +15,6 @@ const App = () => {
   const [filter, setFilter] = useState('all');
 
   function createTask(descr, minValue, secValue) {
-    let maxId = 1;
     let minNumber = parseInt(minValue);
     let secNumber = parseInt(secValue);
     if (secNumber > 60) {

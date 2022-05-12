@@ -8,7 +8,7 @@ const TaskList = ({ dataTasks, deleteTask, filterData, onCheckBoxClick }) => {
   const listItems = dataTasks.map((element) => {
     const { id, minValue, secValue } = element;
     const timeAfterCreate = formatDistanceToNow(new Date(element.created));
-    let classNames = '';
+    let classNames = 'active';
     let checked = false;
     if (element.completed) {
       classNames = 'completed';
